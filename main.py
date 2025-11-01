@@ -12,13 +12,13 @@ def main():
 
     # create life units
     life_units = []
-    unit_width = 30
-    unit_height = 30
+    unit_width = 100
+    unit_height = 100
 
-    for y in range(0, (SCREEN_HEIGHT // unit_height)):
+    for x in range(0, (SCREEN_HEIGHT // unit_height)):
         life_units.append([])
-        for x in range(0, SCREEN_WIDTH // unit_width):
-            life_units[y].append(
+        for y in range(0, SCREEN_WIDTH // unit_width):
+            life_units[x].append(
                 Life_Unit(
                     x * unit_width,
                     y * unit_height,
