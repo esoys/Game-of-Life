@@ -1,52 +1,39 @@
 import pygame
-from pygame.rect import RectType
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
 from life_unit_class import Life_Unit
 
 
 def main():
     pygame.init()
+    print("Starting Game \nof \nLife!")
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     running = True
-
+    dt = 0
+    print(type(screen))
     # create life units
-    life_units = []
-    unit_width = 100
-    unit_height = 100
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Life_Unit.containers = (updatable, drawable)
 
-    for x in range(0, (SCREEN_HEIGHT // unit_height)):
-        life_units.append([])
-        for y in range(0, SCREEN_WIDTH // unit_width):
-            life_units[x].append(
-                Life_Unit(
-                    x * unit_width,
-                    y * unit_height,
-                    unit_width,
-                    unit_height,
-                )
-            )
-
-    print(life_units[0:1][:2])
+    for x in range(0, (SCREEN_WIDTH // UNIT_HEIGHT)):
+        for y in range(0, SCREEN_HEIGHT // UNIT_HEIGHT):
+            Life_Unit(x * UNIT_WIDTH, y * UNIT_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT)
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        screen.fill((50, 50, 50))
+        updatable.update(dt)
 
-        for y in range(0, len(life_units)):
-            for x in range(0, len(life_units[y])):
-                pygame.draw.rect(screen, "white", life_units[y][x], width=1)
+        for draw in drawable:
+            draw.draw(screen)
 
-        # pygame.draw.rect(screen, "white", pygame.Rect(5, 5, 100, 100), width=1)
-        # pygame.draw.rect(screen, "white", pygame.Rect(105, 105, 100, 100), width=1)
-        # pygame.draw.rect(screen, "white", pygame.Rect(5, 105, 100, 100), width=1)
-        # pygame.draw.rect(screen, "white", pygame.Rect(105, 5, 100, 100), width=1)
+        print("hallo", pygame.time.get_ticks)
+
         pygame.display.flip()
-
-        clock.tick(500)
+        dt = clock.tick(0.5) / 100000
 
 
 if __name__ == "__main__":
