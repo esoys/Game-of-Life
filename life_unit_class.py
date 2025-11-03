@@ -1,20 +1,26 @@
 import pygame
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
 
 
-class Life_Unit(pygame.Rect):
+class Life_Unit(pygame.sprite.Sprite):
     registry = []
 
-    def __init__(self, top, left, width, height, alive=False):
-        super().__init__(top, left, width, height)
-        self.__top = top
-        self.__left = left
+    def __init__(self, x, y, width, height):
+        pygame.sprite.Sprite.__init__(self)
+        self.__x = x
+        self.__y = y
         self.__width = width
         self.__height = height
 
-        self.__neighbours = None
-
-        self.alive = alive
+        self.alive = False
         self.color = (60, 60, 60)
+
+        self.image = pygame.Surface((UNIT_WIDTH, UNIT_HEIGHT))
+        # self.image.fill("white")
+        self.rect = self.image.get_rect(center=(self.__x, self.__y))
+
+        self.__neighbours = []
+
         Life_Unit.registry.append(self)
 
     def change_alive_status(self):
@@ -23,37 +29,10 @@ class Life_Unit(pygame.Rect):
 
     def update(self):
         alive_counter = 0
-        for other in Life_Unit.registry:
-            if (
-                other.__top == (self.__top + self.__height)
-                and (
-                    other.__top == (self.__top - self.width)
-                    or (other.__top == self.__top)
-                    or (other.__top - self.width)
-                )
-                or (
-                    other.__top == self.__top
-                    and (
-                        other.__left == self.left - self.width
-                        or other.__left == self.left + self.__width
-                    )
-                    or (
-                        other.__top == self.__top - self.__height
-                        and (
-                            other.__left == self.left - self.width
-                            or other.__left == self.__left
-                            or other.__left == self.left + self.__width
-                        )
-                    )
-                )
-            ) and other.alive:
+        for neighbour in self.__neighbours:
+            if neighbour.alive:
                 alive_counter += 1
 
-            # (other.__top == self.__top and other.__left == self.__left - self.__width)
-            # or (other.__top == self.__top and other.__left == self.__left + self.__width)
-            # or (other.__top == self.__top - self.__width and other.__left == self.__left)
-            # or (other.__top == self.__top + self.__width and other.__left == self.__left)
-            #
         if alive_counter == 3 and not self.alive:
             self.change_alive_status()
 
@@ -61,4 +40,33 @@ class Life_Unit(pygame.Rect):
             self.change_alive_status()
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self, width=1)
+        screen.fill(self.color, rect=self.rect)
+
+    def get_neighbours(self):
+        for other in Life_Unit.registry:
+            if (
+                (
+                    other.__x == self.__x + self.__width
+                    and (
+                        other.__y == self.__y + self.__height
+                        or other.__y == self.__y
+                        or other.__y == self.__y - self.__height
+                    )
+                )
+                or (
+                    other.__x == self.__x
+                    and (
+                        other.__y == self.__y + self.__height
+                        or other.__y == self.__y - self.__height
+                    )
+                )
+                or (
+                    other.__x == self.__x - self.__width
+                    and (
+                        other.__y == self.__y + self.__height
+                        or other.__y == self.__y
+                        or other.__y == self.__y - self.__height
+                    )
+                )
+            ):
+                self.__neighbours.append(other)
