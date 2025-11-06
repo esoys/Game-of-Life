@@ -1,4 +1,5 @@
 import pygame
+from pygame.constants import K_BACKSPACE
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
 from life_unit_class import Life_Unit
 
@@ -27,8 +28,13 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
+            if event.type == 768:  # key down space, keyup: 769
+                start = not start
+                print("start = ", start)
+
         life_units.draw(screen)
-        while start:
+
+        if start:
             print("tick")
             clock.tick(1)
 

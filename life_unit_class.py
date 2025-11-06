@@ -51,6 +51,9 @@ class Life_Unit(pygame.sprite.Sprite):
             width=2,
         )
 
+    def on_klick(self):
+        pass
+
     def get_neighbours(self):
         for other in Life_Unit.registry:
             if (
