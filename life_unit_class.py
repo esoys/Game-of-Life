@@ -51,8 +51,17 @@ class Life_Unit(pygame.sprite.Sprite):
             width=2,
         )
 
-    def on_klick(self):
-        pass
+    def on_click(self, mouse_pos):
+        if (
+            mouse_pos[0] > self.__x
+            and mouse_pos[0] < self.__x + self.__width
+            and mouse_pos[1] > self.__y
+            and mouse_pos[1] < self.__y + self.__height
+        ):
+            self.change_alive_status()
+            print(
+                f"x: {self.__x} - {self.__x + self.__width}, y: {self.__y} - {self.__y + self.__height}, alive: {self.alive}"
+            )
 
     def get_neighbours(self):
         for other in Life_Unit.registry:

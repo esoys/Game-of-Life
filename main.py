@@ -1,5 +1,5 @@
 import pygame
-from pygame.constants import K_BACKSPACE
+from pygame.constants import K_BACKSPACE, MOUSEBUTTONDOWN
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
 from life_unit_class import Life_Unit
 
@@ -23,6 +23,9 @@ def main():
             )
             life_units.add(new_unit)
 
+    for unit in life_units:
+        unit.get_neighbours()
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -31,6 +34,12 @@ def main():
             if event.type == 768:  # key down space, keyup: 769
                 start = not start
                 print("start = ", start)
+
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    print("maus", event.pos)
+                    for sprite in life_units:
+                        sprite.on_click(event.pos)
 
         life_units.draw(screen)
 
