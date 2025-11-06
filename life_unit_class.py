@@ -15,9 +15,11 @@ class Life_Unit(pygame.sprite.Sprite):
         self.alive = False
         self.color = (60, 60, 60)
 
-        self.image = pygame.Surface((UNIT_WIDTH, UNIT_HEIGHT))
+        self.image = pygame.display.get_surface()
+        self.rect = self.image.get_rect(
+            left=self.__x, top=self.__y, width=self.__width, height=self.__height
+        )
         # self.image.fill("white")
-        self.rect = self.image.get_rect(center=(self.__x, self.__y))
 
         self.__neighbours = []
 
@@ -39,8 +41,15 @@ class Life_Unit(pygame.sprite.Sprite):
         if self.alive and (alive_counter == 1 or alive_counter >= 3):
             self.change_alive_status()
 
-    def draw(self, screen):
-        screen.fill(self.color, rect=self.rect)
+        self.draw()
+
+    def draw(self):
+        pygame.draw.rect(
+            self.image,
+            self.color,
+            (self.__x, self.__y, self.__width, self.__height),
+            width=2,
+        )
 
     def get_neighbours(self):
         for other in Life_Unit.registry:

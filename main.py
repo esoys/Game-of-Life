@@ -9,34 +9,31 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     running = True
+    start = False
 
     # create life units
-    updatable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    Life_Unit.containers = (updatable, drawable)
+    life_units = pygame.sprite.Group()
+    Life_Unit.containers = life_units
 
     for x in range(0, (SCREEN_WIDTH // UNIT_HEIGHT)):
         for y in range(0, SCREEN_HEIGHT // UNIT_HEIGHT):
             new_unit = Life_Unit(
                 x * UNIT_WIDTH, y * UNIT_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
             )
-            updatable.add(new_unit)
-            drawable.add(new_unit)
+            life_units.add(new_unit)
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        screen.fill((60, 60, 60))
+        life_units.draw(screen)
+        while start:
+            print("tick")
+            clock.tick(1)
 
-        updatable.update()
-
-        drawable.draw(screen)
-        print("draw")
-
+        life_units.update()
         pygame.display.flip()
-        clock.tick(1)
 
 
 if __name__ == "__main__":
