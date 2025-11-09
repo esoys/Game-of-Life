@@ -11,6 +11,7 @@ def main():
     clock = pygame.time.Clock()
     running = True
     start = False
+    dt = 100
 
     # create life units
     life_units = pygame.sprite.Group()
@@ -33,6 +34,8 @@ def main():
 
             if event.type == 768:  # key down space, keyup: 769
                 start = not start
+                dt = 1 if start else 100 
+                
                 print("start = ", start)
 
             if event.type == MOUSEBUTTONDOWN:
@@ -40,14 +43,13 @@ def main():
                     print("maus", event.pos)
                     for sprite in life_units:
                         sprite.on_click(event.pos)
-                    #pygame.display.flip()
 
-
-        life_units.update()
+        life_units.update(start)
 
         pygame.display.flip()
 
-        clock.tick(10)
+        clock.tick(dt)
+
 
 if __name__ == "__main__":
     main()

@@ -25,23 +25,32 @@ class Life_Unit(pygame.sprite.Sprite):
 
         Life_Unit.registry[f"{self.__x}, {self.__y}"] = self
 
+
     def change_alive_status(self):
         self.alive = not self.alive
         self.color = (60, 60, 60) if not self.alive else (200, 200, 200)
 
-    def update(self):
-#        alive_counter = 0
-#        for neighbour in self.__neighbours:
-#            if neighbour.alive:
-#                alive_counter += 1
-#
-#        if alive_counter == 3 and not self.alive:
-#            self.change_alive_status()
-#
-#        if self.alive and (alive_counter == 1 or alive_counter >= 3):
-#            self.change_alive_status()
-#
+
+    def update(self, start):
+        if start:
+            self.check_neighbours()
         self.draw()
+
+
+    def check_neighbours(self):
+        alive_count = 0
+        for neighbour in self.__neighbours:
+            if neighbour.alive:
+                alive_count += 1
+
+        if not self.alive and alive_count == 3:
+            self.change_alive_status()
+        elif self.alive and (alive_count < 2 or alive_count > 3):
+            self.change_alive_status()
+        else:
+            pass
+    
+
 
     def draw(self):
         pygame.draw.rect(
@@ -51,6 +60,7 @@ class Life_Unit(pygame.sprite.Sprite):
             width=2,
         )
 
+        
     def on_click(self, mouse_pos):
         if (
             mouse_pos[0] > self.__x
@@ -60,9 +70,8 @@ class Life_Unit(pygame.sprite.Sprite):
         ):
             self.change_alive_status()
             print(
-                f"x: {self.__x} - {self.__x + self.__width}, y: {self.__y} - {self.__y + self.__height}, alive: {self.alive}"
+                f" self: x: {self.__x}, y: {self.__y}, alive: {self.alive}"
             )
-            print(self.__neighbours)
             self.draw()
 
 
