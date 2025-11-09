@@ -23,8 +23,8 @@ def main():
             )
             life_units.add(new_unit)
 
-    for unit in life_units:
-        unit.get_neighbours()
+    for unit in Life_Unit.registry:
+        Life_Unit.registry[unit].get_neighbours()
 
     while running:
         for event in pygame.event.get():
@@ -40,16 +40,14 @@ def main():
                     print("maus", event.pos)
                     for sprite in life_units:
                         sprite.on_click(event.pos)
+                    #pygame.display.flip()
 
-        life_units.draw(screen)
-
-        if start:
-            print("tick")
-            clock.tick(1)
 
         life_units.update()
+
         pygame.display.flip()
 
+        clock.tick(10)
 
 if __name__ == "__main__":
     main()

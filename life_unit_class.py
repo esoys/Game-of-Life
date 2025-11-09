@@ -3,7 +3,7 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
 
 
 class Life_Unit(pygame.sprite.Sprite):
-    registry = []
+    registry = {}
 
     def __init__(self, x, y, width, height):
         pygame.sprite.Sprite.__init__(self)
@@ -23,31 +23,31 @@ class Life_Unit(pygame.sprite.Sprite):
 
         self.__neighbours = []
 
-        Life_Unit.registry.append(self)
+        Life_Unit.registry[f"{self.__x}, {self.__y}"] = self
 
     def change_alive_status(self):
         self.alive = not self.alive
         self.color = (60, 60, 60) if not self.alive else (200, 200, 200)
 
     def update(self):
-        alive_counter = 0
-        for neighbour in self.__neighbours:
-            if neighbour.alive:
-                alive_counter += 1
-
-        if alive_counter == 3 and not self.alive:
-            self.change_alive_status()
-
-        if self.alive and (alive_counter == 1 or alive_counter >= 3):
-            self.change_alive_status()
-
+#        alive_counter = 0
+#        for neighbour in self.__neighbours:
+#            if neighbour.alive:
+#                alive_counter += 1
+#
+#        if alive_counter == 3 and not self.alive:
+#            self.change_alive_status()
+#
+#        if self.alive and (alive_counter == 1 or alive_counter >= 3):
+#            self.change_alive_status()
+#
         self.draw()
 
     def draw(self):
         pygame.draw.rect(
             self.image,
             self.color,
-            (self.__x, self.__y, self.__width, self.__height),
+            self.rect,
             width=2,
         )
 
@@ -62,32 +62,16 @@ class Life_Unit(pygame.sprite.Sprite):
             print(
                 f"x: {self.__x} - {self.__x + self.__width}, y: {self.__y} - {self.__y + self.__height}, alive: {self.alive}"
             )
+            print(self.__neighbours)
+            self.draw()
+
 
     def get_neighbours(self):
-        for other in Life_Unit.registry:
-            if (
-                (
-                    other.__x == self.__x + self.__width
-                    and (
-                        other.__y == self.__y + self.__height
-                        or other.__y == self.__y
-                        or other.__y == self.__y - self.__height
-                    )
-                )
-                or (
-                    other.__x == self.__x
-                    and (
-                        other.__y == self.__y + self.__height
-                        or other.__y == self.__y - self.__height
-                    )
-                )
-                or (
-                    other.__x == self.__x - self.__width
-                    and (
-                        other.__y == self.__y + self.__height
-                        or other.__y == self.__y
-                        or other.__y == self.__y - self.__height
-                    )
-                )
-            ):
-                self.__neighbours.append(other)
+        for x in range(-1, 2):
+            for y in range(-1, 2):
+                if x == 0 and y == 0:
+                    continue
+                elif f"{self.__x + x * UNIT_WIDTH}, {self.__y + y * UNIT_HEIGHT}" in Life_Unit.registry:
+                    self.__neighbours.append(Life_Unit.registry[f"{self.__x + x * UNIT_WIDTH}, {self.__y + y * UNIT_HEIGHT}"])
+                else:
+                    continue
