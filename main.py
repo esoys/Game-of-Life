@@ -17,7 +17,7 @@ def main():
     life_units = pygame.sprite.Group()
     Life_Unit.containers = life_units
 
-    for x in range(0, (SCREEN_WIDTH // UNIT_HEIGHT)):
+    for x in range(0, (SCREEN_WIDTH // UNIT_WIDTH)):
         for y in range(0, SCREEN_HEIGHT // UNIT_HEIGHT):
             new_unit = Life_Unit(
                 x * UNIT_WIDTH, y * UNIT_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
@@ -40,16 +40,27 @@ def main():
 
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    print("maus", event.pos)
                     for sprite in life_units:
                         sprite.on_click(event.pos)
 
-        life_units.update(start)
 
+        if start:
+            for unit in Life_Unit.registry:
+                Life_Unit.registry[unit].decide_next_state()
+
+            for unit in Life_Unit.registry:
+                Life_Unit.registry[unit].change_alive_status()
+        
+
+        screen.fill((0, 0, 0))
+        life_units.update()
+        life_units.draw(screen)
         pygame.display.flip()
-
+        
         clock.tick(dt)
-
+        
+    
+    pygame.quit()
 
 if __name__ == "__main__":
     main()

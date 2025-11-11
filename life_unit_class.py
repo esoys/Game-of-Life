@@ -5,6 +5,7 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
 class Life_Unit(pygame.sprite.Sprite):
     registry = {}
 
+
     def __init__(self, x, y, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.__x = x
@@ -13,66 +14,54 @@ class Life_Unit(pygame.sprite.Sprite):
         self.__height = height
 
         self.alive = False
+        self.next_alive = False
         self.color = (60, 60, 60)
 
-        self.image = pygame.display.get_surface()
+        self.image = pygame.Surface((self.__width, self.__height))
+        self.image.fill(self.color)
         self.rect = self.image.get_rect(
             left=self.__x, top=self.__y, width=self.__width, height=self.__height
         )
-        # self.image.fill("white")
 
         self.__neighbours = []
 
         Life_Unit.registry[f"{self.__x}, {self.__y}"] = self
 
 
+    def update(self):
+        self.image.fill(self.color)
+
     def change_alive_status(self):
-        self.alive = not self.alive
+        self.alive = self.next_alive
         self.color = (60, 60, 60) if not self.alive else (200, 200, 200)
 
 
-    def update(self, start):
-        if start:
-            self.check_neighbours()
-        self.draw()
+    def decide_next_state(self):
+        alive_count = self.get_num_alive_neighbours()
 
-
-    def check_neighbours(self):
+        if not self.alive:
+            self.next_alive = (alive_count == 3)
+        else:
+            self.next_alive = (alive_count == 2 or alive_count == 3)
+                
+   
+    def get_num_alive_neighbours(self):
         alive_count = 0
         for neighbour in self.__neighbours:
             if neighbour.alive:
                 alive_count += 1
-
-        if not self.alive and alive_count == 3:
-            self.change_alive_status()
-        elif self.alive and (alive_count < 2 or alive_count > 3):
-            self.change_alive_status()
-        else:
-            pass
-    
+        return alive_count
 
 
     def draw(self):
-        pygame.draw.rect(
-            self.image,
-            self.color,
-            self.rect,
-            width=2,
-        )
+        self.image.fill(self.color)
 
         
     def on_click(self, mouse_pos):
-        if (
-            mouse_pos[0] > self.__x
-            and mouse_pos[0] < self.__x + self.__width
-            and mouse_pos[1] > self.__y
-            and mouse_pos[1] < self.__y + self.__height
-        ):
-            self.change_alive_status()
-            print(
-                f" self: x: {self.__x}, y: {self.__y}, alive: {self.alive}"
-            )
-            self.draw()
+        if self.rect.collidepoint(mouse_pos):
+            self.alive = not self.alive
+            self.color = (60, 60, 60) if not self.alive else (200, 200, 200)
+            self.next_alive = self.alive
 
 
     def get_neighbours(self):
