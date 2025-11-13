@@ -20,12 +20,15 @@ def main():
     for x in range(0, (SCREEN_WIDTH // UNIT_WIDTH)):
         for y in range(0, SCREEN_HEIGHT // UNIT_HEIGHT):
             new_unit = Life_Unit(
-                x * UNIT_WIDTH, y * UNIT_HEIGHT, UNIT_WIDTH, UNIT_HEIGHT
+                x * (UNIT_WIDTH + 1), y * (UNIT_HEIGHT + 1), UNIT_WIDTH, UNIT_HEIGHT, x, y
             )
             life_units.add(new_unit)
 
+
     for unit in Life_Unit.registry:
         Life_Unit.registry[unit].get_neighbours()
+
+
 
     while running:
         for event in pygame.event.get():
@@ -34,7 +37,7 @@ def main():
 
             if event.type == 768:  # key down space, keyup: 769
                 start = not start
-                dt = 1 if start else 100 
+                dt = 2 if start else 100 
                 
                 print("start = ", start)
 
