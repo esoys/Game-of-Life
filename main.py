@@ -17,8 +17,8 @@ def main():
     life_units = pygame.sprite.Group()
     Life_Unit.containers = life_units
 
-    for x in range(0, (SCREEN_WIDTH // UNIT_WIDTH)):
-        for y in range(0, SCREEN_HEIGHT // UNIT_HEIGHT):
+    for x in range(0, SCREEN_WIDTH // UNIT_WIDTH): 
+        for y in range(0, SCREEN_HEIGHT // UNIT_HEIGHT): 
             new_unit = Life_Unit(
                 x * (UNIT_WIDTH + 1), y * (UNIT_HEIGHT + 1), UNIT_WIDTH, UNIT_HEIGHT, x, y
             )
